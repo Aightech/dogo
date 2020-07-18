@@ -1,0 +1,73 @@
+<sdf version="1.6">
+<model name="dogo">
+
+	<!-- ** Links Definitions ** -->
+	<!-- * Base Definitions * -->
+	<link name="base_link">
+		<!-- Position -->
+		<pose>0 0 0 0 -0 0</pose>
+		<!-- Inertia -->
+		<%= inertia(base_m, base_xxi, base_xyi, base_xzi, base_yyi, base_yzi, base_zzi) %>
+		
+		<!-- collision -->
+		<%= collision_cylinder('base_link', base_radius, base_length) %>
+		
+		<!-- Visual -->
+		<%= visual_cylinder('base_link', base_radius, base_length, 'DarkGrey') %>
+		
+		<gravity>1</gravity>
+      		<velocity_decay/>
+	</link>
+	
+	<link name="/imu_link">
+		<!-- Position -->
+		<pose>0 0 0 0 -0 0</pose>
+		<!-- Inertia -->
+		<%= inertia(imu_m, imu_xxi, imu_xyi, imu_xzi, imu_yyi, imu_yzi, imu_zzi) %>
+		
+	</link>
+	
+	<%= joint('imu', 'revolute', '/imu_link', 'base_link', 1, 0, 0, 0, 0)%>
+	
+	
+	
+	<% (0..4-1).each do |i| %>
+		<% 	
+			
+			
+		%>
+		
+		<% (0..4-1).each do |l| %>
+			<% 	
+			leg_name="leg"+l.to_s+"_"+i.to_s
+			pos_leg = [
+			        0,
+				0,
+				0,
+				0,
+				0,
+				0]
+			color = 'DarkGrey'
+			
+			%>
+			
+	<link name="<%= leg_name %>">
+		<!-- Position -->
+		<pose> <%= a_to_s(pos_leg)%> </pose>
+		<!-- Inertia -->
+		<%= inertia(legs_m[l], legs_xxi[l], legs_xyi[l], legs_xzi[l], legs_yyi[l], legs_yzi[l], legs_zzi[l]) %>
+		
+		<!-- Visual -->
+		<%= visual_ext(leg_name, 'model://leg'+l.to_s+'.stl', color) %>
+		
+	</link>
+	<%= joint(leg_name, 'revolute', leg_name, 'base_link', 0, 0, 1, -1e+16, 1e+16)%>
+
+		<% end %>
+	<% end %>
+	
+
+	
+</model>
+</sdf>
+

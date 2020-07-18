@@ -1,0 +1,57 @@
+<%
+author="Devillard"
+model_name="dogo"
+
+
+# Geometry
+
+
+
+########## BASE ##########
+# Masse
+base_m=1.8
+
+# Inertia
+base_xxi=0.029125
+base_xyi=0
+base_xzi=0
+base_yyi=0.029125
+base_yzi=0
+base_zzi=0.055225
+
+# Dimension
+base_radius=0.1
+base_length=0.05
+##########################
+
+########## IMU ###########
+# Masse
+imu_m=0.015
+
+# Inertia 
+imu_xxi=1e-05
+imu_xyi=0
+imu_xzi=0
+imu_yyi=1e-05
+imu_yzi=0
+imu_zzi=1e-05
+##########################
+
+########## LEG 0 ###########
+# Masse
+legs_m=[1,1,1,1]
+
+# Inertia 
+legs_xxi=[1,1,1,1]
+legs_xyi=[0,0,0,0]
+legs_xzi=[0,0,0,0]
+legs_yyi=[1,1,1,1]
+legs_yzi=[0,0,0,0]
+legs_zzi=[1,1,1,1]
+
+# Dimension
+legs_width=[1,1,1,1]
+legs_heigth=[1,1,1,1]
+###########################
+
+%>
