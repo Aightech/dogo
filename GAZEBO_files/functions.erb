@@ -1,21 +1,47 @@
 <%
+
 #<!--
-############# MACRO BOX  ##############
-def box(dx, dy, dz)
-'<collision name="collision">
-        <geometry>
-         <box>
-	     <size> ' + dx.to_s + ' ' + dy.to_s + ' ' + dz.to_s + ' </size>
-	 </box>
-        </geometry>
-      </collision>
-      <visual name="visual">
-        <geometry>
-          <box>
-	     <size> ' + dx.to_s + ' ' + dy.to_s + ' ' + dz.to_s + ' </size>
-	 </box>
-        </geometry>
-      </visual>'
+############# MACRO BOX Collision ##############
+def collision_box(name, dx, dy, dz, rel_to='', pos=[0,0,0,0,0,0])
+'<collision name="' + name + '_colision">
+			<pose relative_to='+rel_to+'> ' + pos[0].to_s + ' ' + pos[1].to_s + ' ' + pos[2].to_s + ' ' + pos[3].to_s + ' ' + pos[4].to_s + ' ' + pos[5].to_s + ' </pose>
+			<geometry>
+			<box>
+	                    <size> ' + dx.to_s + ' ' + dy.to_s + ' ' + dz.to_s + ' </size>
+	 		</box>	    
+			</geometry>
+			<surface>
+				<contact>
+					<ode>
+						<min_depth>0.001</min_depth>
+						<max_vel>0</max_vel>
+					</ode>
+				</contact>
+				<friction>
+					<ode/>
+				</friction>
+			</surface>
+		</collision>'
+    end
+##########################################
+#-->
+#<!--
+############# MACRO BOX Visual ##############
+def visual_box(name, dx, dy, dz, color)
+'<visual name="' + name + '_visual">
+			<pose frame=''>0 0 0 0 -0 0</pose>
+			<geometry>
+			<box>
+	                    <size> ' + dx.to_s + ' ' + dy.to_s + ' ' + dz.to_s + ' </size>
+	 		</box>	    
+			</geometry>
+			<material>
+				<script>
+					<name>Gazebo/' + color + '</name>
+					<uri>file://media/materials/scripts/gazebo.material</uri>
+				</script>
+			</material>
+		</visual>'
     end
 ##########################################
 #-->
@@ -64,19 +90,19 @@ def visual_cylinder(name, radius, length, color)
 					<uri>file://media/materials/scripts/gazebo.material</uri>
 				</script>
 			</material>
-			</visual>'
+		</visual>'
     end
 ##########################################
 #-->
 
 #<!--
 ############# MACRO VISUAL EXT ##############
-def visual_ext(name, uri, color)
+def visual_ext(name, uri, color, rel_to='', pos=[0,0,0,0,0,0])
 '<visual name="' + name + '_visual">
-			<pose frame=''>0 0 0 0 -0 0</pose>
+			<pose relative_to='+rel_to+'> ' + pos[0].to_s + ' ' + pos[1].to_s + ' ' + pos[2].to_s + ' ' + pos[3].to_s + ' ' + pos[4].to_s + ' ' + pos[5].to_s + ' </pose>
 			<geometry>
 				<mesh>
-					<scale>1 1 1</scale>
+					<scale>0.001 0.001 0.001</scale>
 					<uri>'+uri+'</uri>
 				</mesh>
 			</geometry>
@@ -86,39 +112,64 @@ def visual_ext(name, uri, color)
 					<uri>file://media/materials/scripts/gazebo.material</uri>
 				</script>
 			</material>
-			</visual>'
+		</visual>'
     end
 ##########################################
 #-->
 
-
 #<!--
-############# MACRO SPHERE  ##############
-def sphere(radius)
-'<collision name="collision">
-        <geometry>
-          <sphere>
-	    <radius> ' + radius.to_s + ' </radius>
-	 </sphere>
-        </geometry>
-      </collision>
-      <visual name="visual">
-        <geometry>
-          <sphere>
-	    <radius> ' + radius.to_s + ' </radius>
-	 </sphere>
-        </geometry>
-      </visual>'
-end
+############# MACRO BOX Collision ##############
+def collision_sphere(name, radius)
+'<collision name="' + name + '_colision">
+			<pose frame=''>0 0 0 0 -0 0</pose>
+			<geometry>
+			<sphere>
+				<radius> ' + radius.to_s + ' </radius>
+	 		</sphere>  
+			</geometry>
+			<surface>
+				<contact>
+					<ode>
+						<min_depth>0.001</min_depth>
+						<max_vel>0</max_vel>
+					</ode>
+				</contact>
+				<friction>
+					<ode/>
+				</friction>
+			</surface>
+		</collision>'
+    end
 ##########################################
 #-->
 
 #<!--
-############# MACRO BOX  ##############
-def inertia(m, xx, xy, xz, yy, yz, zz)
-'<inertial>
+############# MACRO CYLINDER Visual ##############
+def visual_sphere(name, radius, color)
+'<visual name="' + name + '_visual">
 			<pose frame=''>0 0 0 0 -0 0</pose>
+			<geometry>
+			<sphere>
+				<radius> ' + radius.to_s + ' </radius>
+	 		</sphere>	    
+			</geometry>
+			<material>
+				<script>
+					<name>Gazebo/' + color + '</name>
+					<uri>file://media/materials/scripts/gazebo.material</uri>
+				</script>
+			</material>
+		</visual>'
+    end
+##########################################
+#-->
+
+#<!--
+############# MACRO inertia  ##############
+def inertia(m, xx, xy, xz, yy, yz, zz, origin=[0,0,0])
+'<inertial>
 			<mass> ' + m.to_s + '</mass>
+			<pose>'+origin[0].to_s+' '+origin[1].to_s+' '+origin[2].to_s+' 0 0 0</pose>
 			<inertia>
 				<ixx>' + xx.to_s + '</ixx>
 				<ixy>' + xy.to_s + '</ixy>
@@ -134,12 +185,12 @@ def inertia(m, xx, xy, xz, yy, yz, zz)
 
 #<!--
 ############# MACRO Joint  ##############
-def joint(name, type, child, parent, dx, dy, dz, lmin, lmax)
+def joint(name, type, child, parent, axis, lmin, lmax)
 '<joint name="' + name + '_joint" type="'+type+'">
 		<child>' + child + '</child>
 		<parent>' + parent + '</parent>
 		<axis>
-			<xyz>'+dx.to_s+' '+dy.to_s+' '+dz.to_s+'</xyz>
+			<xyz>'+axis[0].to_s+' '+axis[1].to_s+' '+axis[2].to_s+'</xyz>
 			<limit>
 				<lower>'+lmin.to_s+'</lower>
 				<upper>'+lmax.to_s+'</upper>
